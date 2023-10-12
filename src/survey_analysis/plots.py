@@ -12,6 +12,16 @@ def parse_json(col: pd.Series) -> pd.DataFrame:
         for c in col.fillna('[]').values
     ]).fillna(False)
 
+def count_values(column:pd.Series):
+    by_value = column.value_count().reset_index()
+    by_value.columns = [column.name, 'count']
+    return by_value
+
+def sum_values(column:pd.Series):
+    by_value = column.sum().reset_index()
+    by_value.columns = [column.name, 'sum']
+    return by_value
+
 def plot_categorical_single(
     df: pd.DataFrame,
     target=str,
@@ -22,7 +32,7 @@ def plot_categorical_single(
     ncols = valid_responses[~valid_responses[by].isna()][by].unique().shape[0]
     fig, axes = plt.subplots(ncols = ncols+1, figsize = (4*ncols+4, 4), sharey = True)
     sns.barplot(
-        data = valid_responses[target].value_counts().reset_index(),
+        data = count_values(valid_responses[target]),
         x = 'count',
         y = target,
         orient = 'h',
@@ -33,7 +43,7 @@ def plot_categorical_single(
     for i, (idx, grouped) in enumerate(valid_responses.groupby(by)):
         sns.barplot(
             orient = 'h',
-            data = grouped[target].value_counts().reset_index(),
+            data = count_values(grouped[target]),
             x = 'count',
             y = target,
             ax = axes[i+1],
@@ -64,9 +74,9 @@ def plot_categorical_multi(
     fig, axes = plt.subplots(ncols = len(valid_by_vals)+1, figsize = (4*len(valid_by_vals)+4, 4), sharey = True)
 
     sns.barplot(
-        data = parsed.sum().reset_index(name='sum'),
+        data = sum_values(parsed),
         x = 'sum',
-        y = 'index',
+        y = target,
         orient = 'h',
         ax = axes[0],
     ).set(
@@ -75,9 +85,9 @@ def plot_categorical_multi(
 
     for i, group in enumerate(valid_by_vals):
         sns.barplot(
-            data = parsed[df[by]==group].sum().reset_index(name='sum'),
+            data = sum_values(parsed[df[by]==group]),
             x = 'sum',
-            y = 'index',
+            y = target,
             orient = 'h',
             ax = axes[i+1],
         ).set(
@@ -185,11 +195,9 @@ def plot_population(
 
     if len(columns) > 1:
         for i, col in enumerate(columns):
-            print(col)
-            print(df[col].value_counts().reset_index())
             sns.barplot(
                 orient='h',
-                data = df[col].value_counts().reset_index(),
+                data = count_values(df[col]),
                 y = col,
                 x = 'count',
                 ax = axes[i],
@@ -199,7 +207,7 @@ def plot_population(
     else:
         sns.barplot(
             orient='h',
-            data = df[columns[0]].value_counts().reset_index(),
+            data = count_values(df[columns[0]]),
             y = columns[0],
         x = 'count',
         ax = axes,
