@@ -19,7 +19,7 @@ def is_number(col):
             return False
     return True
 
-def gather_columns(filename):
+def prepare_data(filename):
     df = pd.read_csv(filename)
 
     file_setting = {
@@ -108,8 +108,8 @@ def gather_columns(filename):
 
 @click.command()
 @click.argument('filename')
-def run_gather_columns(filename):
-    gather_columns(filename)
+def run_prepare_data(filename):
+    prepare_data(filename)
 
 if __name__ == "__main__":
-    run_gather_columns()
+    run_prepare_data()
