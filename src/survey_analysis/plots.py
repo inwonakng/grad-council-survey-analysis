@@ -185,6 +185,8 @@ def plot_population(
 
     if len(columns) > 1:
         for i, col in enumerate(columns):
+            print(col)
+            print(df[col].value_counts().reset_index())
             sns.barplot(
                 orient='h',
                 data = df[col].value_counts().reset_index(),
