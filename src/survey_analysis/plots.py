@@ -38,7 +38,9 @@ def plot_categorical_single(
         orient = 'h',
         ax = axes[0]
     ).set(
-        title = f'Valid responses = {len(valid_responses)}'
+        title = f'Valid responses = {len(valid_responses)}',
+        xlabel = 'Count',
+        ylabel = ''
     )
     for i, (idx, grouped) in enumerate(valid_responses.groupby(by)):
         sns.barplot(
@@ -49,7 +51,8 @@ def plot_categorical_single(
             ax = axes[i+1],
         ).set(
             title = idx,
-            xlabel = ''
+            xlabel = 'Count',
+            ylabel = ''
         )
         
     fig.suptitle(f'"{target.replace(".","")}" by "{by.replace(".","")}"')
@@ -80,7 +83,9 @@ def plot_categorical_multi(
         orient = 'h',
         ax = axes[0],
     ).set(
-        title = f'Valid responses = {(~df[by].isna()).sum()}'
+        title = f'Valid responses = {(~df[by].isna()).sum()}',
+        xlabel = 'Count',
+        ylabel = '',
     )
 
     for i, group in enumerate(valid_by_vals):
@@ -91,7 +96,9 @@ def plot_categorical_multi(
             orient = 'h',
             ax = axes[i+1],
         ).set(
-            title = group
+            title = group,
+            xlabel = 'Count',
+            ylabel = '',
         )
     fig.suptitle(f'"{target.replace(".","")}" by "{by.replace(".","")}"')
     fig.tight_layout()
@@ -152,6 +159,7 @@ def plot_numeric(
         ax = axes[0]
     ).set(
         xlabel = '',
+        ylabel = 'Count',
         title = f'Valid responses = {len(valid_responses)}'
     )
 
@@ -162,6 +170,7 @@ def plot_numeric(
             ax = axes[i+1]
         ).set(
             xlabel = '',
+            ylabel = '',
             title = group,
         )
 
