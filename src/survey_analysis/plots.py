@@ -17,9 +17,9 @@ def count_values(column:pd.Series) -> pd.DataFrame:
     by_value.columns = [column.name, 'count']
     return by_value
 
-def sum_values(val_df:pd.DataFrame) -> pd.DataFrame:
+def sum_values(val_df:pd.DataFrame, name:str) -> pd.DataFrame:
     by_value = val_df.sum().reset_index()
-    by_value.columns = [val_df.name, 'sum']
+    by_value.columns = [name, 'sum']
     return by_value
 
 def plot_categorical_single(
@@ -74,7 +74,7 @@ def plot_categorical_multi(
     fig, axes = plt.subplots(ncols = len(valid_by_vals)+1, figsize = (4*len(valid_by_vals)+4, 4), sharey = True)
 
     sns.barplot(
-        data = sum_values(parsed),
+        data = sum_values(parsed, target),
         x = 'sum',
         y = target,
         orient = 'h',
@@ -85,7 +85,7 @@ def plot_categorical_multi(
 
     for i, group in enumerate(valid_by_vals):
         sns.barplot(
-            data = sum_values(parsed[df[by]==group]),
+            data = sum_values(parsed[df[by]==group], target),
             x = 'sum',
             y = target,
             orient = 'h',
