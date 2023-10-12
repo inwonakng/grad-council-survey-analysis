@@ -8,7 +8,6 @@ def is_list(col):
         try: 
             json.loads(val.replace('\'','"'))
         except Exception:
-            # print('this guys gives error.. ',val)
             return False
     return True
 
@@ -97,14 +96,14 @@ def gather_columns(filename):
             print('value type:', value_type)
 
             useful_columns += [{
-                'name': '',
+                # 'name': '',
                 'question': c,
                 'input_type': input_type,
                 'value_type': value_type,
             }]
 
     file_setting['useful_columns'] = useful_columns
-    yaml.safe_dump(file_setting, open(filename.replace('.csv','-columns.yaml'),'w'))
+    # yaml.safe_dump(file_setting, open(filename.replace('.csv','-columns.yaml'),'w'))
     return file_setting
 
 @click.command()
