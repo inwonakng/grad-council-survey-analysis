@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "survey_analysis"
+version = "0.0.1"
+authors = [
+  { name="Inwon Kang", email="inwon.kang04@gmail.com" },
+]
+description = "Simple parser for grad council survey data"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "click>=8.1.7",
+    "matplotlib>=3.8.0",
+    "pandas>=2.1.1",
+    "PyYAML>=6.0.1",
+    "seaborn>=0.13.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/inwonakng/grad-council-survey-analysis"
+"Bug Tracker" = "https://github.com/inwonakng/grad-council-survey-analysis/issues"
+
