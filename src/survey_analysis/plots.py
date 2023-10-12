@@ -12,14 +12,14 @@ def parse_json(col: pd.Series) -> pd.DataFrame:
         for c in col.fillna('[]').values
     ]).fillna(False)
 
-def count_values(column:pd.Series):
-    by_value = column.value_count().reset_index()
+def count_values(column:pd.Series) -> pd.DataFrame:
+    by_value = column.value_counts().reset_index()
     by_value.columns = [column.name, 'count']
     return by_value
 
-def sum_values(column:pd.Series):
-    by_value = column.sum().reset_index()
-    by_value.columns = [column.name, 'sum']
+def sum_values(val_df:pd.DataFrame) -> pd.DataFrame:
+    by_value = val_df.sum().reset_index()
+    by_value.columns = [val_df.name, 'sum']
     return by_value
 
 def plot_categorical_single(
