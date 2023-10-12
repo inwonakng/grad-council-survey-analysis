@@ -11,58 +11,8 @@ def parse_json(col: pd.Series) -> pd.DataFrame:
         {v: True for v in json.loads(c.replace('\'','"'))}
         for c in col.fillna('[]').values
     ]).fillna(False)
-    
-def plot_population(
-    df: pd.DataFrame,
-    identifiers: dict[str,str],
-    save_dir: str | Path | None = None,
-):
-    columns = []    
-    if identifiers['grad_type']:
-        columns += [identifiers['grad_type']]
-    if identifiers['grad_year']:
-        columns += [identifiers['grad_year']]
-    if identifiers['is_undergrad']:
-        columns += [identifiers['is_undergrad']]
-    if identifiers['undergrad_year']:
-        columns += [identifiers['undergrad_year']]
-    
-    fig, axes = plt.subplots(nrows =len(columns), figsize=(10, 4*len(columns)))
 
-    if len(columns) > 1:
-        for i, col in enumerate(columns):
-            sns.barplot(
-                orient='h',
-                data = df[col].value_counts().reset_index(),
-                y = col,
-                x = 'count',
-                ax = axes[i],
-            ).set(
-                title = col,
-            )
-    else:
-        sns.barplot(
-            orient='h',
-            data = df[columns[0]].value_counts().reset_index(),
-            y = columns[0],
-        x = 'count',
-        ax = axes,
-    ).set(
-        title = columns[0],
-    )
-
-    fig.suptitle(f'Population distribution')
-    fig.tight_layout()
-    if save_dir is not None:
-        fig_file = Path(save_dir) / f'population.png'
-        fig_file.parent.mkdir(exist_ok=True, parents=True)
-        fig.savefig(
-            fig_file,
-            dpi = 300,
-            bbox_inches = 'tight',
-        )
-
-def plot_2way_categorical_single(
+def plot_categorical_single(
     df: pd.DataFrame,
     target=str,
     by=str,
@@ -92,10 +42,10 @@ def plot_2way_categorical_single(
             xlabel = ''
         )
         
-    fig.suptitle(f'"{target}" by "{by}"')
+    fig.suptitle(f'"{target.replace(".","")}" by "{by.replace(".","")}"')
     fig.tight_layout()
     if save_dir is not None:
-        fig_file = Path(save_dir) / f'{target}_by_{by}.png'
+        fig_file = Path(save_dir) / f'{target.replace(".","")}_by_{by.replace(".","")}.png'
         fig_file.parent.mkdir(exist_ok=True, parents=True)
         fig.savefig(
             fig_file,
@@ -103,7 +53,7 @@ def plot_2way_categorical_single(
             bbox_inches = 'tight',
         )
 
-def plot_2way_categorical_multi(
+def plot_categorical_multi(
     df: pd.DataFrame,
     target=str,
     by=str,
@@ -133,10 +83,10 @@ def plot_2way_categorical_multi(
         ).set(
             title = group
         )
-    fig.suptitle(f'"{target}" by "{by}"')
+    fig.suptitle(f'"{target.replace(".","")}" by "{by.replace(".","")}"')
     fig.tight_layout()
     if save_dir is not None:
-        fig_file = Path(save_dir) / f'{target}_by_{by}.png'
+        fig_file = Path(save_dir) / f'{target.replace(".","")}_by_{by.replace(".","")}.png'
         fig_file.parent.mkdir(exist_ok=True, parents=True)
         fig.savefig(
             fig_file,
@@ -144,7 +94,7 @@ def plot_2way_categorical_multi(
             bbox_inches = 'tight',
         )
     
-def plot_2way_categorical(
+def plot_categorical(
     df: pd.DataFrame,
     target:str,
     by:str,
@@ -152,14 +102,14 @@ def plot_2way_categorical(
     save_dir: str | Path | None = None,
 ):
     if input_type == 'multi-select':
-        plot_2way_categorical_multi(
+        plot_categorical_multi(
             df, 
             target=target, 
             by=by, 
             save_dir=save_dir
         )
     elif input_type == 'single-select':
-        plot_2way_categorical_single(
+        plot_categorical_single(
             df, 
             target=target, 
             by=by,
@@ -168,7 +118,7 @@ def plot_2way_categorical(
     else:
         raise Exception('Unknown input type.')
     
-def plot_2way_numeric(
+def plot_numeric(
     df: pd.DataFrame,
     target: str,
     by: str,
@@ -205,15 +155,73 @@ def plot_2way_numeric(
             title = group,
         )
 
-    fig.suptitle(f'"{target}" by "{by}"')
+    fig.suptitle(f'"{target.replace(".","")}" by "{by.replace(".","")}"')
     fig.tight_layout()
     if save_dir is not None:
-        fig_file = Path(save_dir) / f'{target}_by_{by}.png'
+        fig_file = Path(save_dir) / f'{target.replace(".","")}_by_{by.replace(".","")}.png'
         fig_file.parent.mkdir(exist_ok=True, parents=True)
         fig.savefig(
             fig_file,
             dpi = 300,
             bbox_inches = 'tight',
+        )
+
+def plot_population(
+    df: pd.DataFrame,
+    identifiers: dict[str,str],
+    save_dir: str | Path | None = None,
+):
+    columns = []    
+    if identifiers['grad_type']:
+        columns += [identifiers['grad_type']]
+    if identifiers['grad_year']:
+        columns += [identifiers['grad_year']]
+    if identifiers['is_undergrad']:
+        columns += [identifiers['is_undergrad']]
+    if identifiers['undergrad_year']:
+        columns += [identifiers['undergrad_year']]
+    
+    fig, axes = plt.subplots(nrows =len(columns), figsize=(10, 3*len(columns)))
+
+    if len(columns) > 1:
+        for i, col in enumerate(columns):
+            sns.barplot(
+                orient='h',
+                data = df[col].value_counts().reset_index(),
+                y = col,
+                x = 'count',
+                ax = axes[i],
+            ).set(
+                title = col,
+            )
+    else:
+        sns.barplot(
+            orient='h',
+            data = df[columns[0]].value_counts().reset_index(),
+            y = columns[0],
+        x = 'count',
+        ax = axes,
+    ).set(
+        title = columns[0],
+    )
+
+    fig.suptitle(f'Population distribution')
+    fig.tight_layout()
+    if save_dir is not None:
+        fig_file = Path(save_dir) / f'population.png'
+        fig_file.parent.mkdir(exist_ok=True, parents=True)
+        fig.savefig(
+            fig_file,
+            dpi = 300,
+            bbox_inches = 'tight',
+        )
+    
+    if identifiers['grad_type'] and identifiers['grad_year']:
+        plot_categorical_single(
+            df,
+            target = identifiers['grad_year'],
+            by = identifiers['grad_type'],
+            save_dir = save_dir,
         )
 
 def plot_response(
@@ -224,7 +232,7 @@ def plot_response(
     save_dir: str | Path | None = None,
 ):
     if target['value_type'] == 'numeric':
-       plot_2way_numeric(
+       plot_numeric(
            df, 
            target=target['question'], 
            by=by, 
@@ -232,7 +240,7 @@ def plot_response(
            save_dir=save_dir,
         )
     elif target['value_type'] == 'categorical':
-        plot_2way_categorical(
+        plot_categorical(
             df, 
             target=target['question'],
             by=by,
