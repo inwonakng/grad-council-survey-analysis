@@ -199,6 +199,8 @@ def plot_population(
         columns += [identifiers['is_undergrad']]
     if identifiers['undergrad_year']:
         columns += [identifiers['undergrad_year']]
+    if identifiers['grad_dept']:
+        columns += [identifiers['grad_dept']]
     
     fig, axes = plt.subplots(nrows =len(columns), figsize=(10, 3*len(columns)))
 
@@ -211,6 +213,7 @@ def plot_population(
                 x = 'count',
                 ax = axes[i],
             ).set(
+                ylabel='',
                 title = col,
             )
     else:
@@ -221,6 +224,7 @@ def plot_population(
         x = 'count',
         ax = axes,
     ).set(
+        ylabel='',
         title = columns[0],
     )
 

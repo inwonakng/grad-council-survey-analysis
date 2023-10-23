@@ -19,19 +19,21 @@ def is_number(col):
             return False
     return True
 
+file_setting = {
+    'identifiers': {
+        'grad_type': '',
+        'grad_year': '',
+        'grad_dept': '',
+        'is_undergrad': '',
+        'undergrad_year': '',
+    },
+    'useful_columns': [
+    ],
+}
+
 def prepare_data(filename):
     df = pd.read_csv(filename)
 
-    file_setting = {
-        'identifiers': {
-            'grad_type': '',
-            'grad_year': '',
-            'is_undergrad': '',
-            'undergrad_year': '',
-        },
-        'useful_columns': [
-        ],
-    }
 
     useful_columns = []
 
@@ -53,22 +55,49 @@ def prepare_data(filename):
 
             if not is_num: 
                 valid_unique_values = [g.lower() for g in nonempty_rows[c].unique()]
-                if 'phd' in valid_unique_values or 'ph.d.' in valid_unique_values:
+                if (
+                    not file_setting['identifiers']['grad_type'] and (
+                        'phd' in valid_unique_values or 'ph.d.' in valid_unique_values
+                    )
+                ):
                     print('Possible GRAD TYPE column')
                     print(c)
                     file_setting['identifiers']['grad_type'] = c
                     continue
 
-                if 'senior' in valid_unique_values:
+                if (
+                    not file_setting['identifiers']['undergrad_year'] and (
+                        'senior' in valid_unique_values
+                    )
+                ):
                     print('Possible UNDERGRAD TYPE column')
                     print(c)
                     file_setting['identifiers']['undergrad_year'] = c
                     continue
 
-                if 'year' in c.lower() and not 'senior' in valid_unique_values:
+                if (
+                    not file_setting['identifiers']['grad_year'] and (
+                        'year' in c.lower() 
+                        and not 'senior' in valid_unique_values
+                    )
+                ):
                     print('Possible GRAD YEAR column')
                     print(c)
                     file_setting['identifiers']['grad_year'] = c
+                    continue
+            
+                if (
+                   not file_setting['identifiers']['grad_dept'] and (
+                        'school' in c.lower() 
+                        or 'department' in c.lower() 
+                        or any(['CS' in v for v in  valid_unique_values])
+                        or any(['CSCI' in v for v in  valid_unique_values])
+                        or any(['computer science' in v.lower() for v in  valid_unique_values])
+                   )
+                ):
+                    print(f'Possible GRAD DEPARTMENT column')
+                    print(c)
+                    file_setting['identifiers']['grad_dept'] = c
                     continue
             
             if is_num and 'year' in c.lower():
